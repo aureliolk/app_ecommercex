@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCreateProductMutation, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from './graphql/generated'
+import { useCreateProductMutation, useDeleteMultipleProductMutation, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from './graphql/generated'
 import { Trash, Spinner, Pencil } from "phosphor-react"
 
 
@@ -8,6 +8,8 @@ function App() {
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false)
   const [loadingDeleteProduct, setLoadingDeleteProduct] = useState(false)
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false)
+  const [loadingMutipleDeleteProduct, setLoadingMutipleDeleteProduct] = useState(false)
+
 
   // Variavel para armazena o ID unico do produto
   const [id, setId] = useState("")
@@ -89,7 +91,7 @@ function App() {
 
   }
 
-  // Funçao Para Deletar Produto
+  // Funçao Para Deletar Unico Produto
   const delProduct = async (id: string) => {
     setId(id)
     setLoadingDeleteProduct(true)
@@ -107,11 +109,35 @@ function App() {
     })
   }
 
+  // Variavel para Armazena o Estado do CheckBox de Multiplos Itens
+  const [deleteMutipleProduct, setDeleteMutipleProduct] = useState(false)
+
+  var listItem = [] as any
+
+  const [delMutiplesItem] = useDeleteMultipleProductMutation()
+
+  // Função para Deletar Varios Produtos
+  const delMultipleProduct = async () => {
+    setLoadingMutipleDeleteProduct(true)
+
+    delMutiplesItem({
+      variables: {
+        ids: listItem
+      }
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+      setLoadingMutipleDeleteProduct(false)
+      refetch()
+    })
+  }
+
   if (!data) {
     return <div>Carregando</div>
   }
 
-  console.log(data)
 
   return (
     <div className='flex flex-col gap-3 p-2'>
@@ -147,11 +173,11 @@ function App() {
                       ) : (
                         <>
                           <div className='gap-2 flex'>
-                            <input type="radio" name='active' id='publicity' value="on" className='border' /> 
+                            <input type="radio" name='active' id='publicity' value="on" className='border' />
                             <label htmlFor="publicity">Ativado</label>
                           </div>
                           <div className='gap-2 flex'>
-                            <input defaultChecked type="radio" name='active' id='draft' value="off" className='border' /> 
+                            <input defaultChecked type="radio" name='active' id='draft' value="off" className='border' />
                             <label htmlFor="draft">Desativado</label>
                           </div>
                         </>
@@ -173,12 +199,25 @@ function App() {
                     <button onClick={() => { setEdit(true), setId(item.id) }} className="mt-2"><Pencil size={20} /></button>
                     <button onClick={() => { delProduct(item.id) }} className="mt-2">{loadingDeleteProduct && item.id === id ? <Spinner size={20} className="animate-spin" /> : <Trash size={20} />}</button>
                   </div>
+                  {deleteMutipleProduct && <input type="checkbox" onClick={() => { listItem.push(item.id) }} />}
                 </div>
               )}
             </div>
           )
         })}
       </div>
+      {data.products.length > 1 &&
+        <div className='w-fit'>
+          {deleteMutipleProduct ?
+            <div className='flex gap-4'>
+              <button className='border py-2 px-4 rounded' onClick={() => { delMultipleProduct() }}>{loadingMutipleDeleteProduct ? "Deletando" : "Deletar Todos"}</button>
+              <button className='border py-2 px-4 rounded' onClick={() => { setDeleteMutipleProduct(false) }}>Cancelar</button>
+            </div>
+            :
+            <button className='border py-2 px-4 rounded' onClick={() => { setDeleteMutipleProduct(true) }}>Selecionar Varios</button>
+          }
+        </div>
+      }
       <form onSubmit={handleCreate} className='flex gap-2 flex-col border p-4 w-fit rounded'>
         <div className='flex flex-col'>
           <label htmlFor="name">Nome do Produto</label>

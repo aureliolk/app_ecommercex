@@ -17715,6 +17715,13 @@ export type CreateProductMutationVariables = Exact<{
 
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string } | null };
 
+export type DeleteMultipleProductMutationVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;
+}>;
+
+
+export type DeleteMultipleProductMutation = { __typename?: 'Mutation', deleteManyProducts: { __typename?: 'BatchPayload', count: any } };
+
 export type DeleteProductMutationVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
@@ -17773,6 +17780,39 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const DeleteMultipleProductDocument = gql`
+    mutation deleteMultipleProduct($ids: [ID!]) {
+  deleteManyProducts(where: {id_in: $ids}) {
+    count
+  }
+}
+    `;
+export type DeleteMultipleProductMutationFn = Apollo.MutationFunction<DeleteMultipleProductMutation, DeleteMultipleProductMutationVariables>;
+
+/**
+ * __useDeleteMultipleProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteMultipleProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMultipleProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMultipleProductMutation, { data, loading, error }] = useDeleteMultipleProductMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useDeleteMultipleProductMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMultipleProductMutation, DeleteMultipleProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMultipleProductMutation, DeleteMultipleProductMutationVariables>(DeleteMultipleProductDocument, options);
+      }
+export type DeleteMultipleProductMutationHookResult = ReturnType<typeof useDeleteMultipleProductMutation>;
+export type DeleteMultipleProductMutationResult = Apollo.MutationResult<DeleteMultipleProductMutation>;
+export type DeleteMultipleProductMutationOptions = Apollo.BaseMutationOptions<DeleteMultipleProductMutation, DeleteMultipleProductMutationVariables>;
 export const DeleteProductDocument = gql`
     mutation deleteProduct($id: ID) {
   deleteProduct(where: {id: $id}) {
