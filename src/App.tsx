@@ -1,18 +1,21 @@
-import { FormEvent, useState } from 'react'
-import { useCreateProductMutation, useDeleteProductMutation, useGetProductsLazyQuery, useGetProductsQuery } from './graphql/generated'
-import {Trash, Spinner} from "phosphor-react"
+import { useState } from 'react'
+import { useCreateProductMutation, useDeleteProductMutation, useGetProductsLazyQuery, useGetProductsQuery, useUpdateProductMutation } from './graphql/generated'
+import { Trash, Spinner, Pencil } from "phosphor-react"
 
 
 function App() {
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false)
   const [loadingDeleteProduct, setLoadingDeleteProduct] = useState(false)
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false)
+  const [id, setId] = useState("")
+  const [edit, setEdit] = useState(false)
 
-  const { data,refetch } = useGetProductsQuery()
+  const { data, refetch } = useGetProductsQuery()
   const [createProduct] = useCreateProductMutation()
   const [deleteProduct] = useDeleteProductMutation()
+  const [updateProduct] = useUpdateProductMutation()
 
-  const handleSubmit = async (e:any)=>{
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoadingCreateProduct(true)
     const target = e.target
@@ -23,34 +26,66 @@ function App() {
     }
 
     createProduct({
-      variables:{
+      variables: {
         name: data.name,
         value: Number(data.value),
         active: data.active
       }
-    }).then(res =>{
+    }).then(res => {
       console.log(res)
-    }).catch(err =>{
+    }).catch(err => {
       console.log(err)
-    }).finally(()=>{
+    }).finally(() => {
       setLoadingCreateProduct(false)
       target.reset()
       refetch()
     })
-    
+
   }
 
-  const delProduct = async (id:string) => {
+  const handleEdit = async (e: any) => {
+    e.preventDefault()
+    setLoadingUpdateProduct(true)
+    setEdit(true)
+    const target = e.target
+    const data = {
+      id: target.id.value,
+      name: target.name.value,
+      value: Number(target.value.value),
+      active: target.active.value === "on" ? true : false
+    }
+    updateProduct({
+      variables: {
+        active: data.active,
+        id: data.id,
+        name: data.name,
+        value: data.value
+      }
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    }).finally(() => {
+      setLoadingUpdateProduct(false)
+      refetch()
+      setEdit(false)
+    })
+    console.log(data)
+
+  }
+
+  const delProduct = async (id: string) => {
+    setId(id)
     setLoadingDeleteProduct(true)
     deleteProduct({
-      variables:{
+      variables: {
         id
       }
-    }).then(res =>{
+    }).then(res => {
       console.log(res)
-    }).catch(err =>{
+    }).catch(err => {
       console.log(err)
-    }).finally(()=>{
+    }).finally(() => {
       setLoadingDeleteProduct(false)
       refetch()
     })
@@ -68,33 +103,70 @@ function App() {
       <div className='flex gap-3 my-2'>
         {data.products.map(item => {
           return (
-            <div key={item.id} className="flex flex-col border w-fit p-2 rounded relative">
-              <div>Nome: {item.name}</div>
-              <div>Valor: {item.value}</div>
-              <div>Status: {item.active === true ? "Ativo" : "Desativado"}</div>
-              <button onClick={()=>{delProduct(item.id)}} className="mt-2">{loadingDeleteProduct ? <Spinner size={20} className="animate-spin"/> : <Trash size={20}/>}</button>
+            <div key={item.id}>
+              {edit && item.id === id ? (
+                <form onSubmit={handleEdit} className="flex flex-col border w-fit p-2 rounded relative">
+                  <input type="hidden" name='id' defaultValue={item.id.toString()} />
+                  <div>
+                    <label htmlFor="name">Nome</label>
+                    <input type="text" name='name' id='name' className='border' defaultValue={item.name?.toString()} />
+                  </div>
+                  <div >
+                    <label htmlFor="value">Valor</label>
+                    <input type="text" name='value' id='value' className='border' defaultValue={item.value?.toString()} />
+                  </div>
+                  <div className='flex' >
+                    <label htmlFor='active'>Status</label>
+                    <div>
+                      {item.active ? (
+                        <>
+                          <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
+                          <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
+                        </>
+                      ) : (
+                        <>
+                          <input type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
+                          <input defaultChecked type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
+                        </>
+                      )}
+
+                    </div>
+                  </div>
+                  <button className='py-1 px-12 rounded border w-fit'>{loadingUpdateProduct ? "Enviando" : "Enviar"}</button>
+                </form>
+              ) : (
+                <div key={item.id} className="flex flex-col border w-fit p-2 rounded relative">
+                  <div>Nome: {item.name}</div>
+                  <div>Valor: {item.value}</div>
+                  <div>Status: {item.active === true ? "Ativo" : "Desativado"}</div>
+                  <div className='flex justify-between'>
+                    <button onClick={() => { setEdit(true), setId(item.id) }} className="mt-2"><Pencil size={20} /></button>
+                    <button onClick={() => { delProduct(item.id) }} className="mt-2">{loadingDeleteProduct && item.id === id ? <Spinner size={20} className="animate-spin" /> : <Trash size={20} />}</button>
+                  </div>
+                </div>
+              )}
             </div>
           )
         })}
       </div>
       <form onSubmit={handleSubmit} className='flex gap-2 flex-col border p-4 w-fit rounded'>
-          <div className='flex flex-col'>
-            <label htmlFor="name">Nome do Produto</label>
-            <input type="text" name='name' id='name' className='border' />
+        <div className='flex flex-col'>
+          <label htmlFor="name">Nome do Produto</label>
+          <input type="text" name='name' id='name' className='border' />
+        </div>
+        <div className='flex flex-col'>
+          <label htmlFor="value">Valor</label>
+          <input type="text" name='value' id='value' className='border' />
+        </div>
+        <div className='flex flex-col'>
+          <label htmlFor='active'>Status</label>
+          <div className='w-fit flex gap-1'>
+            <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
+            <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
           </div>
-          <div className='flex flex-col'>
-            <label htmlFor="value">Valor</label>
-            <input type="text" name='value' id='value' className='border' />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='active'>Status</label>
-            <div className='w-fit flex gap-1'>
-            <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Publicado</label>
-            <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Rascunho</label>
-            </div>
-          </div>
-          <button className='py-1 px-12 rounded border w-fit'>{loadingCreateProduct ? "Enviando" : "Enviar"}</button>
-        </form>
+        </div>
+        <button className='py-1 px-12 rounded border w-fit'>{loadingCreateProduct ? "Enviando" : "Enviar"}</button>
+      </form>
     </div>
   )
 }
