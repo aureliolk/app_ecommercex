@@ -8,7 +8,7 @@ function App() {
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false)
   const [loadingDeleteProduct, setLoadingDeleteProduct] = useState(false)
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false)
-  
+
   // Variavel para armazena o ID unico do produto
   const [id, setId] = useState("")
 
@@ -123,38 +123,49 @@ function App() {
               {edit && item.id === id ? (
                 <form onSubmit={handleEdit} className="flex flex-col border w-fit p-2 rounded relative">
                   <input type="hidden" name='id' defaultValue={item.id.toString()} />
-                  <div>
+                  <div className='boxInputUpdate'>
                     <label htmlFor="name">Nome</label>
                     <input type="text" name='name' id='name' className='border' defaultValue={item.name?.toString()} />
                   </div>
-                  <div >
+                  <div className='boxInputUpdate'>
                     <label htmlFor="value">Valor</label>
                     <input type="text" name='value' id='value' className='border' defaultValue={item.value?.toString()} />
                   </div>
-                  <div className='flex' >
+                  <div className='boxInputUpdate' >
                     <label htmlFor='active'>Status</label>
-                    <div>
+                    <div className='flex gap-4'>
                       {item.active ? (
                         <>
-                          <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
-                          <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
+                          <div className='gap-2 flex'>
+                            <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' />
+                            <label htmlFor="publicity">Ativado</label></div>
+                          <div className='gap-2 flex'>
+                            <input type="radio" name='active' id='draft' value="off" className='border' />
+                            <label htmlFor="draft">Desativado</label>
+                          </div>
                         </>
                       ) : (
                         <>
-                          <input type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
-                          <input defaultChecked type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
+                          <div className='gap-2 flex'>
+                            <input type="radio" name='active' id='publicity' value="on" className='border' /> 
+                            <label htmlFor="publicity">Ativado</label>
+                          </div>
+                          <div className='gap-2 flex'>
+                            <input defaultChecked type="radio" name='active' id='draft' value="off" className='border' /> 
+                            <label htmlFor="draft">Desativado</label>
+                          </div>
                         </>
                       )}
 
                     </div>
                   </div>
                   <div>
-                  <button className='py-1 px-12 rounded border w-fit'>{loadingUpdateProduct ? "Enviando" : "Enviar"}</button>
-                  <button type='button' onClick={()=>{setEdit(false)}} className='py-1 px-12 rounded border w-fit'>Cancelar</button>
+                    <button className='py-1 px-12 rounded border w-fit'>{loadingUpdateProduct ? "Enviando" : "Enviar"}</button>
+                    <button type='button' onClick={() => { setEdit(false) }} className='py-1 px-12 rounded border w-fit'>Cancelar</button>
                   </div>
                 </form>
               ) : (
-                <div key={item.id} className="flex flex-col border w-fit p-2 rounded relative">
+                <div key={item.id} className={item.active ? "flex flex-col border w-fit p-2 rounded relative bg-green-400 " : "flex flex-col border w-fit p-2 rounded relative bg-red-400"}>
                   <div>Nome: {item.name}</div>
                   <div>Valor: {item.value}</div>
                   <div>Status: {item.active === true ? "Ativo" : "Desativado"}</div>
