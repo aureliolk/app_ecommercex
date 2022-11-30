@@ -1,21 +1,35 @@
 import { useState } from 'react'
-import { useCreateProductMutation, useDeleteProductMutation, useGetProductsLazyQuery, useGetProductsQuery, useUpdateProductMutation } from './graphql/generated'
+import { useCreateProductMutation, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from './graphql/generated'
 import { Trash, Spinner, Pencil } from "phosphor-react"
 
 
 function App() {
+  // Variaveis para armazena estado de carregamento da requisição
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false)
   const [loadingDeleteProduct, setLoadingDeleteProduct] = useState(false)
   const [loadingUpdateProduct, setLoadingUpdateProduct] = useState(false)
+  
+  // Variavel para armazena o ID unico do produto
   const [id, setId] = useState("")
+
+  // Variavel para armazena o estado da Atulização
   const [edit, setEdit] = useState(false)
 
+  // Variavel "Data" lista todo os item do Model Produto 
+  // Variavel "Refetch" atualiza a lista do Model Produto
   const { data, refetch } = useGetProductsQuery()
+
+  // Variavel createProduct Cria um Produto
   const [createProduct] = useCreateProductMutation()
+
+  // Variavel deleteProduct Deleta um Produto
   const [deleteProduct] = useDeleteProductMutation()
+
+  // Variavel updateProduct Atualizar um Produto
   const [updateProduct] = useUpdateProductMutation()
 
-  const handleSubmit = async (e: any) => {
+  // Funçao Para Cria Produto
+  const handleCreate = async (e: any) => {
     e.preventDefault()
     setLoadingCreateProduct(true)
     const target = e.target
@@ -43,6 +57,7 @@ function App() {
 
   }
 
+  // Funçao Para Atualizar Produto
   const handleEdit = async (e: any) => {
     e.preventDefault()
     setLoadingUpdateProduct(true)
@@ -74,6 +89,7 @@ function App() {
 
   }
 
+  // Funçao Para Deletar Produto
   const delProduct = async (id: string) => {
     setId(id)
     setLoadingDeleteProduct(true)
@@ -132,7 +148,10 @@ function App() {
 
                     </div>
                   </div>
+                  <div>
                   <button className='py-1 px-12 rounded border w-fit'>{loadingUpdateProduct ? "Enviando" : "Enviar"}</button>
+                  <button type='button' onClick={()=>{setEdit(false)}} className='py-1 px-12 rounded border w-fit'>Cancelar</button>
+                  </div>
                 </form>
               ) : (
                 <div key={item.id} className="flex flex-col border w-fit p-2 rounded relative">
@@ -149,7 +168,7 @@ function App() {
           )
         })}
       </div>
-      <form onSubmit={handleSubmit} className='flex gap-2 flex-col border p-4 w-fit rounded'>
+      <form onSubmit={handleCreate} className='flex gap-2 flex-col border p-4 w-fit rounded'>
         <div className='flex flex-col'>
           <label htmlFor="name">Nome do Produto</label>
           <input type="text" name='name' id='name' className='border' />
