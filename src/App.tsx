@@ -191,7 +191,7 @@ function App() {
                   </div>
                 </form>
               ) : (
-                <div key={item.id} className={item.active ? "flex flex-col border w-fit p-2 rounded relative bg-green-400 " : "flex flex-col border w-fit p-2 rounded relative bg-red-400"}>
+                <div key={item.id} onClick={()=>{setDeleteMutipleProduct(true) }} className={item.active ? "flex flex-col border w-fit p-2 rounded relative bg-green-400 cursor-pointer " : "flex flex-col border w-fit p-2 rounded relative bg-red-400 cursor-pointer"}>
                   <div>Nome: {item.name}</div>
                   <div>Valor: {item.value}</div>
                   <div>Status: {item.active === true ? "Ativo" : "Desativado"}</div>
@@ -199,7 +199,7 @@ function App() {
                     <button onClick={() => { setEdit(true), setId(item.id) }} className="mt-2"><Pencil size={20} /></button>
                     <button onClick={() => { delProduct(item.id) }} className="mt-2">{loadingDeleteProduct && item.id === id ? <Spinner size={20} className="animate-spin" /> : <Trash size={20} />}</button>
                   </div>
-                  {deleteMutipleProduct && <input type="checkbox" onClick={() => { listItem.push(item.id) }} />}
+                  {deleteMutipleProduct && <input type="checkbox" id='checkbox' onClick={() => { listItem.push(item.id) }} />}
                 </div>
               )}
             </div>
@@ -231,7 +231,7 @@ function App() {
           <label htmlFor='active'>Status</label>
           <div className='w-fit flex gap-1'>
             <input defaultChecked type="radio" name='active' id='publicity' value="on" className='border' /> <label htmlFor="publicity">Ativado</label>
-            <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="publicity">Desativado</label>
+            <input type="radio" name='active' id='draft' value="off" className='border' /> <label htmlFor="draft">Desativado</label>
           </div>
         </div>
         <button className='py-1 px-12 rounded border w-fit'>{loadingCreateProduct ? "Enviando" : "Enviar"}</button>
