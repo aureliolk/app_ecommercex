@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useCreateProductMutation, useGetProductsQuery } from "../graphql/generated"
+import { useCreateProductMutation, useGetAllProductsQuery } from "../graphql/generated"
 
 export const FormCreateProduct = () => {
   // Chama a Função Para Criar Produto no GraphCMS
@@ -7,7 +7,7 @@ export const FormCreateProduct = () => {
   // Estado para Armezana o Tempo de Carregamento da Requisição para O GraphCMS
   const [loadingCreateProduct, setLoadingCreateProduct] = useState(false)
   // Função que Atualizar a Lista de Produtos
-  const { refetch } = useGetProductsQuery()
+  const { refetch } = useGetAllProductsQuery()
 
   // Função Que Recebe da Dados do Formulario
   const handleCreate = async (e: any) => {

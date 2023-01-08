@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { Context } from "../contexts/useContext"
-import { useDeleteMultipleProductMutation, useGetProductsQuery } from "../graphql/generated"
+import { useDeleteMultipleProductMutation, useGetAllProductsQuery } from "../graphql/generated"
 
 export const DeleteMultipleProduct = () => {
     // Chama a Função Deleta Multiplos Produtos no GraphCMS
@@ -10,7 +10,7 @@ export const DeleteMultipleProduct = () => {
     // Estado Global das Variaveis
     const { deleteMutipleProduct, setDeleteMutipleProduct, listItem } = useContext(Context)
     // Função que Atualizar a Lista de Produtos
-    const { refetch } = useGetProductsQuery()
+    const { refetch } = useGetAllProductsQuery()
 
     // Função Que Recebe da Dados do Formulario
     const delMultipleProduct = async () => {
