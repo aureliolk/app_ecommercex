@@ -1,5 +1,4 @@
-import Link from "next/link"
-import { Eye, Pencil, Spinner, Trash } from "phosphor-react"
+import { Spinner, Trash } from "phosphor-react"
 import { useContext, useState } from "react"
 import { Context } from "../contexts/useContext"
 import { useDeleteProductMutation, useGetAllProductsQuery } from "../graphql/generated"
@@ -10,7 +9,7 @@ export const DeleteProduct = ({ item }: any) => {
     // Estado para Armezana o Tempo de Carregamento da Requisição para O GraphCMS
     const [loadingDeleteProduct, setLoadingDeleteProduct] = useState(false)
     // Estado Global das Variaveis
-    const { id, setId, setDeleteMutipleProduct, deleteMutipleProduct, setEdit, listItem } = useContext(Context)
+    const { id, setId } = useContext(Context)
     // Função que Atualizar a Lista de Produtos
     const { refetch } = useGetAllProductsQuery()
 
@@ -35,10 +34,8 @@ export const DeleteProduct = ({ item }: any) => {
 
 
     return (
-        <div className='flex justify-between bg-gray-800 text-white items-center p-1 rounded border border-t-0 rounded-tr-none'>
-            <button onClick={() => { setEdit(true), setId(item.id) }} ><Pencil size={20} /></button>
-            <Link href={item.id} ><Eye /></Link> 
-            <button onClick={() => { delProduct(item.id) }} >{loadingDeleteProduct && item.id === id ? <Spinner size={20} className="animate-spin" /> : <Trash size={20} />}</button>
-        </div>
+        <button onClick={() => { delProduct(item.id) }} >
+            {loadingDeleteProduct && item.id === id ? <Spinner size={20} className="animate-spin" /> : <Trash size={20} />}
+        </button>
     )
 }

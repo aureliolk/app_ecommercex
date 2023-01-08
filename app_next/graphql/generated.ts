@@ -19345,7 +19345,7 @@ export type GetProductQueryVariables = Exact<{
 }>;
 
 
-export type GetProductQuery = { __typename?: 'Query', product?: { __typename?: 'Product', name?: string | null, value?: number | null, stage: Stage } | null };
+export type GetProductQuery = { __typename?: 'Query', product?: { __typename?: 'Product', name?: string | null, value?: number | null, active?: boolean | null } | null };
 
 
 export const CreateProductDocument = gql`
@@ -19530,7 +19530,7 @@ export const GetProductDocument = gql`
   product(where: {id: $id}) {
     name
     value
-    stage
+    active
   }
 }
     `;

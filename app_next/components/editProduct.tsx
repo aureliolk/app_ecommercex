@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { Context } from "../contexts/useContext"
-import { useGetProductsQuery, useUpdateProductMutation } from "../graphql/generated"
+import { useGetAllProductsQuery, useUpdateProductMutation } from "../graphql/generated"
 
 
 
@@ -12,7 +12,7 @@ export const FormEditProduct = ({ item }: any) => {
   // Estado Global das Variaveis
   const { setEdit } = useContext(Context)
   // Função que Atualizar a Lista de Produtos
-  const { refetch } = useGetProductsQuery()
+  const { refetch } = useGetAllProductsQuery()
 
   // Funçao Para Atualizar Produto
   const handleEdit = async (e: any) => {
