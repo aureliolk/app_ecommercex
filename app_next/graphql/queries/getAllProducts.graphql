@@ -1,4 +1,4 @@
-query getProducts {
+query getAllProducts {
   products(orderBy: name_ASC) {
     id
     name
