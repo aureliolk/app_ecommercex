@@ -1,7 +1,0 @@
-@tailwind base;
-.boxInputUpdate{
-    @apply flex justify-between
-}
-
-@tailwind components;
-@tailwind utilities;

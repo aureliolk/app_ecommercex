@@ -1,5 +1,0 @@
-mutation deleteMultipleProduct($ids: [ID!]) {
-  deleteManyProducts(where: {id_in: $ids}) {
-    count
-  }
-}

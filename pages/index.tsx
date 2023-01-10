@@ -6,20 +6,19 @@ import { CardProduct } from '../components/cardProduct'
 import { Context } from '../contexts/useContext'
 import { DeleteMultipleProduct } from '../components/deleteMultipleProduct'
 import Link from 'next/link'
-import { useGetAllProductsQuery } from '../graphql/generated'
 import { Pencil, Eye } from 'phosphor-react'
 import { DeleteProduct } from '../components/deleteProduct'
-
+import { useGetAllProductsQuery } from '../graphql/generated'
 
 
 export default function Home() {
   // Estado Global das Variaveis
   const { id, edit, deleteMutipleProduct, listItem, setEdit, setId } = useContext(Context)
-  // Função que Atualizar a Lista de Produtos
-  const { data } = useGetAllProductsQuery()
 
-  if (!data) {
-    return <div>Carregando</div>
+  const {data} = useGetAllProductsQuery()
+
+  if(!data){
+    return <div>Loading</div>
   }
 
   return (
@@ -33,8 +32,9 @@ export default function Home() {
       <main >
         <div className='flex flex-col gap-3 p-2'>
           <h1 className='text-lg'> CRUD Exemple Product</h1>
-          <div className='flex gap-3'>
-            {data.products.map(item => {
+          <FormCreateProduct />
+          <div className='grid grid-cols-5 gap-3 w-11/12 m-auto '>
+            {data.products.map((item : any) => {
               return (
                 <div key={item.id}>
                   {edit && item.id === id ? (
@@ -61,7 +61,7 @@ export default function Home() {
           {data.products.length > 1 &&
             <DeleteMultipleProduct />
           }
-          <FormCreateProduct />
+          
         </div>
       </main>
     </>

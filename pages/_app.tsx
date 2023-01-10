@@ -6,10 +6,10 @@ import { ContextProvider } from '../contexts/useContext'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ContextProvider>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <ContextProvider>
         <Component {...pageProps} />
-      </ApolloProvider>
-    </ContextProvider>
+      </ContextProvider>
+    </ApolloProvider>
   )
 }

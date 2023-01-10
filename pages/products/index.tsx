@@ -1,17 +1,50 @@
+import { gql } from "@apollo/client"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { CardProduct } from "../../components/cardProduct"
-import { useGetAllProductsQuery } from "../../graphql/generated"
+import { client } from "../../lib/apollo"
 
 
-const Index = () => {
-    const { data } = useGetAllProductsQuery()
-    const { pathname } = useRouter()
-    const { back } = useRouter()
 
-    if (!data) {
-        return <div>Carregando</div>
+export async function getServerSideProps() {
+
+    const { data } = await client.query({
+        query: gql`
+         query Products {
+            products {
+                id
+                name
+                active
+                value
+            }
     }
+        `
+    })
+
+    return {
+        props: {
+            data
+        }
+    }
+}
+
+interface PropsProductQuery {
+    data: {
+        products: [
+            {
+                active: boolean
+                name: string
+                value: number
+                id:string
+            }
+        ]
+    }
+}
+
+
+
+const Index = ({ data }: PropsProductQuery) => {
+    const { pathname, back } = useRouter()
 
     return (
         <div className="flex flex-col">
@@ -25,8 +58,8 @@ const Index = () => {
             </div>
 
 
-            <div className="flex p-4 gap-3">
-                {data.products.map(item => {
+            <div className=" gap-3 p-4 grid grid-cols-5 w-11/12 m-auto ">
+                {data.products.map( item => {
                     return (
                         <Link href={`/products/${item.id}`} key={item.id} className="cursor-pointer hover:border" >
                             <CardProduct item={item} />

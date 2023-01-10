@@ -1,8 +1,0 @@
-query getProducts {
-  products(orderBy: name_ASC) {
-    id
-    name
-    value
-    active
-  }
-}

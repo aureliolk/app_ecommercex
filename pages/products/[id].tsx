@@ -1,22 +1,40 @@
+import { gql } from "@apollo/client"
+import { NextPageContext } from "next"
 import { useRouter } from "next/router"
-import { useGetProductQuery } from "../../graphql/generated"
+import { client } from "../../lib/apollo"
 
-
-export default function Products() {
-  const { query } = useRouter()
-  const { data } = useGetProductQuery({
-    variables: {
-      id: query.id?.toString()
-    }
+export async function getServerSideProps(ctx: NextPageContext) {
+  const { data } = await client.query({
+    query: gql`
+      query getProduct($id: ID) {
+      product(where: {id: $id}) {
+      name
+      value
+      active
+   }
+}
+`,
+    variables: { id: ctx.query.id }
   })
-
-  const { back } = useRouter()
-
-  if (!data) {
-    return <div>Carregando</div>
+  return {
+    props: {
+      data
+    }
   }
+}
 
-  console.log(data)
+interface PropsProductQuery {
+  data: {
+    product: {
+      active: boolean
+      name: string
+      value: number
+    }
+  }
+}
+
+export default function Products({ data }: PropsProductQuery) {
+  const { back } = useRouter()
 
   return (
     <div>
@@ -43,13 +61,11 @@ export default function Products() {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-light">Status</span>
-            <span className="text-xl font-bold">{data.product?.active ? "Ativo":"Desativado"}</span>
+            <span className="text-xl font-bold">{data.product?.active ? "Ativo" : "Desativado"}</span>
           </div>
         </div>
       </div>
 
     </div>
   )
-
-
 }
