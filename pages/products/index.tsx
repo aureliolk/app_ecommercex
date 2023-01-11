@@ -2,6 +2,8 @@ import { gql } from "@apollo/client"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { CardProduct } from "../../components/cardProduct"
+import Layout from "../../components/layout/layout"
+import { Banner } from "../../components/sections/banner"
 import { client } from "../../lib/apollo"
 
 
@@ -44,19 +46,12 @@ interface PropsProductQuery {
 
 
 const Index = ({ data }: PropsProductQuery) => {
-    const { pathname, back } = useRouter()
+    const { pathname } = useRouter()
 
     return (
-        <div className="flex flex-col">
-            <div className={`h-80 w-full flex-col text-white flex text-4xl font-bold p-2 bg-gray-900`}>
-                <div className="h-fit text-sm w-fit">
-                    <button onClick={back} className="hover:underline">Voltar</button>
-                </div>
-                <div className="flex items-center justify-center h-full">
-                    {pathname.replace(/\/(\w)/, (match, p1) => p1.toUpperCase())}
-                </div>
-            </div>
-
+        <Layout>
+            <div className="flex flex-col">
+            <Banner bg="bg-gray-900" title={pathname.replace(/\/(\w)/, (match, p1) => p1.toUpperCase())} backState={true} />
 
             <div className=" gap-3 p-4 grid grid-cols-5 w-11/12 m-auto ">
                 {data.products.map( item => {
@@ -68,6 +63,7 @@ const Index = ({ data }: PropsProductQuery) => {
                 })}
             </div>
         </div>
+        </Layout>
     )
 }
 

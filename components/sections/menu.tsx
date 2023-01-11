@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useSession,signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { ButtonLoginGitHub } from "../button/buttonLoginGithub"
 import { ButtonLogoutGitHub } from "../button/buttonLogoutGitHub"
 
@@ -9,6 +9,14 @@ export const Menu = () => {
         {
             name: "Home",
             url: "/"
+        },
+        {
+            name: "Loja",
+            url: "/products"
+        },
+        {
+            name:"Admin",
+            url:"/admin"
         }
     ]
 

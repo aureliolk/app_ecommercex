@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document'
+import { Menu } from '../components/sections/menu'
 
 export default function Document() {
   return (
