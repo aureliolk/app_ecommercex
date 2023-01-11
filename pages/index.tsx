@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { Pencil, Eye } from 'phosphor-react'
 import { DeleteProduct } from '../components/deleteProduct'
 import { useGetAllProductsQuery } from '../graphql/generated'
+import { Menu } from '../components/sections/menu'
 
 
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Menu />
       <main >
         <div className='flex flex-col gap-3 p-2'>
           <h1 className='text-lg'> CRUD Exemple Product</h1>
