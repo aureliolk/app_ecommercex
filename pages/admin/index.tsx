@@ -19,7 +19,7 @@ interface Props {
 
 const ProtectedPage = ({ loggedIn }: Props) => {
   const { id, edit, deleteMutipleProduct, listItem, setEdit, setId } = useContext(Context)
-  const { data } = useGetAllProductsQuery()
+  const { data, refetch, loading } = useGetAllProductsQuery()
   const router = useRouter()
   const [shouldRedirect, setShouldRedirect] = useState(false)
 
@@ -29,13 +29,16 @@ const ProtectedPage = ({ loggedIn }: Props) => {
     }
   }, [loggedIn])
 
+  useEffect(()=>{
+    refetch()
+  },[data])
 
   if(shouldRedirect){
     router.push('/')
     return <div>Redirecting...</div>
   }
 
-  if (!data ) {
+  if (!data || loading ) {
     return <div>Loading</div>
   }
 
@@ -54,7 +57,8 @@ const ProtectedPage = ({ loggedIn }: Props) => {
                   <div>
                     <CardProduct item={item} />
                     <div className='flex justify-between bg-gray-800 text-white items-center p-1 rounded border border-t-0 rounded-tr-none'>
-                      <button onClick={() => { setEdit(true), setId(item.id) }} ><Pencil size={20} /></button>
+                      {/* <button onClick={() => { setEdit(true), setId(item.id) }} ><Pencil size={20} /></button> */}
+                      <Link href={`/products/edit/${item.id}`} ><Pencil size={20} /></Link>
                       <Link href={`/products/${item.id}`} ><Eye /></Link>
                       <DeleteProduct item={item} />
                     </div>

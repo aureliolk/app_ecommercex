@@ -48,6 +48,7 @@ interface PropsProductQuery {
 const Index = ({ data }: PropsProductQuery) => {
     const { pathname } = useRouter()
 
+
     return (
         <Layout>
             <div className="flex flex-col">
